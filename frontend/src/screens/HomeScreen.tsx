@@ -4,6 +4,8 @@ import {HomeTab, WishlistTab, CartTab, SearchTab, SettingTab} from '../tabs';
 import {Image, Text, View} from 'react-native';
 import {icons} from '../constants';
 import { ItemDetails } from '../constants/types';
+import {LoginScreen} from './LoginScreen';
+import {SignupScreen} from './SignupScreen';
 
 type TabBarItemProps = {
   source: any; // Adjust type according to your image sources

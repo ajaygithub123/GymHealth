@@ -1,144 +1,148 @@
-import {useNavigation} from '@react-navigation/native';
-import {StackNavigationProp} from '@react-navigation/stack';
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
-  Image,
-  ImageSourcePropType,
-  Text,
-  TouchableOpacity,
   View,
+  Text,
+  ScrollView,
+  KeyboardAvoidingView,
+  Platform,
+  Alert,
 } from 'react-native';
-import {CustomButton, FormField} from '../components';
-import {icons} from '../constants';
+import { CustomButton, FormField } from '../components';
 
-type Props = {};
-
-const LoginScreen = (props: Props) => {
-  const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
-  const [emailError, setEmailError] = useState('');
-  const [passwordError, setPasswordError] = useState('');
-  const [isSubmitting, setIsSubmitting] = useState(false);
+const LoginScreen = () => {
   const [form, setForm] = useState({
-    email: '',
-    username: '',
-    password: '',
+    mobile: '',
+    otp: '',
   });
-  type RootStackParamList = {
-    ForgotPassword: undefined;
-    Signup: undefined;
-  };
-  const handleForgotPassword = () => {
-    navigation.navigate('ForgotPassword');
+  const [isOtpSent, setIsOtpSent] = useState(false); // Set to true by default for testing
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const sendOtp = async () => {
+    if (form.mobile.length !== 10) {
+      Alert.alert('Invalid Mobile Number', 'Please enter a valid 10-digit mobile number.');
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      // Replace with your API endpoint to send OTP
+      const response = await fetch('http://your-api-endpoint/send-otp', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ mobile: form.mobile }),
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        setIsOtpSent(true);
+        Alert.alert('OTP Sent', 'An OTP has been sent to your mobile number.');
+      } else {
+        Alert.alert('Error', data.message || 'Failed to send OTP.');
+      }
+    } catch (error) {
+      Alert.alert('Error', 'Something went wrong. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
-  const handleLogin = () => {};
-  const handleSignInWithProvider = () => {};
-  const handleNavigateToSignUp = () => {
-    navigation.navigate('Signup');
+  const verifyOtp = async () => {
+    if (form.otp.length !== 6) {
+      Alert.alert('Invalid OTP', 'Please enter a valid 6-digit OTP.');
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      // Replace with your API endpoint to verify OTP
+      const response = await fetch('http://your-api-endpoint/verify-otp', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ mobile: form.mobile, otp: form.otp }),
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        Alert.alert('Success', 'Mobile number verified successfully.');
+        // Navigate to the next screen or perform any action
+      } else {
+        Alert.alert('Error', data.message || 'Failed to verify OTP.');
+      }
+    } catch (error) {
+      Alert.alert('Error', 'Something went wrong. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
+
   return (
-    <View className="px-5 flex-1 bg-white pt-5">
-      <Text className="text-4xl font-bold text-start ">
-        Welcome {'\n'} Back!
-      </Text>
-      <View>
-        {/* text input */}
-        <FormField
-          title="Email"
-          value={form.email}
-          setError={setEmailError}
-          error={emailError}
-          handleChangeText={(e: any) => {
-            setEmailError('');
-            setForm({...form, email: e});
-          }}
-          placeholder="username or email"
-          otherStyles="my-5"
-        />
-        <View>
-          <FormField
-            title="Password"
-            value={form.password}
-            setError={setPasswordError}
-            error={passwordError}
-            handleChangeText={(e: any) => {
-              setPasswordError('');
-              setForm({...form, password: e});
-            }}
-            placeholder="Password"
-            otherStyles="mt-5"
-          />
-          <TouchableOpacity onPress={handleForgotPassword}>
-            <Text className="text-red-600 text-lg font-medium self-end">
-              Forgot Password?
-            </Text>
-          </TouchableOpacity>
-        </View>
-        {/* submit btn */}
-        <CustomButton
-          title="Login"
-          handlePress={handleLogin}
-          isLoading={isSubmitting}
-          containerStyle="mt-7 py-5"
-        />
-        {/* or continue with  */}
-        <View className="mt-5 self-center">
-          <Text className="text-[#575757] text-lg self-center mt-5">
-            {' '}
-            - OR Continue with -{' '}
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+      <ScrollView
+        contentContainerStyle={{ flexGrow: 1 }}
+        showsVerticalScrollIndicator={false}>
+        <View className="px-5 flex-1 bg-white pt-5">
+          <Text className="text-4xl font-bold text-start">
+            Verify Mobile Number
           </Text>
-          <View className="flex flex-row items-center gap-3 mt-5 justify-between">
-            {ContinueWithData.map((item, index) => {
-              return (
-                <TouchableOpacity
-                  key={item.id}
-                  onPress={handleSignInWithProvider}
-                  className="rounded-full border-2 bg-red-50 border-red-500 p-4">
-                  <Image
-                    source={item.image}
-                    className="w-8 h-8 "
-                    resizeMode="contain"
-                  />
-                </TouchableOpacity>
-              );
-            })}
-          </View>
-          <View className="flex flex-row  items-center gap-x-2 justify-center mt-8">
-            <Text className="text-[#575757] text-xl ">Create An Account</Text>
-            <TouchableOpacity onPress={handleNavigateToSignUp}>
-              <Text className="text-xl font-bold underline text-action ">
-                Sign Up
-              </Text>
-            </TouchableOpacity>
-          </View>
+
+          {/* Mobile Number Input */}
+          <FormField
+            title="Mobile Number"
+            value={form.mobile}
+            handleChangeText={(text: string) => {
+              if (/^\d{0,10}$/.test(text)) {
+                setForm({ ...form, mobile: text });
+              }
+            }}
+            placeholder="Enter mobile number"
+            otherStyles="mt-5"
+            keyboardType="phone-pad"
+          />
+
+          {/* Send OTP Button */}
+          {!isOtpSent && (
+            <CustomButton
+              title="Send OTP"
+              handlePress={sendOtp}
+              isLoading={isSubmitting}
+              containerStyle="mt-5 py-5"
+            />
+          )}
+
+          {/* OTP Input */}
+          {isOtpSent && (
+            <>
+              <FormField
+                title="Enter OTP"
+                value={form.otp}
+                handleChangeText={(text: string) => {
+                  if (/^\d{0,6}$/.test(text)) {
+                    setForm({ ...form, otp: text });
+                  }
+                }}
+                placeholder="Enter 6-digit OTP"
+                otherStyles="mt-5"
+                keyboardType="number-pad"
+              />
+              <CustomButton
+                title="Verify OTP"
+                handlePress={verifyOtp}
+                isLoading={isSubmitting}
+                containerStyle="mt-5 py-5"
+              />
+            </>
+          )}
         </View>
-      </View>
-    </View>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 };
 
 export default LoginScreen;
-
-type ContinueWithType = {
-  image: ImageSourcePropType | undefined;
-  id: number;
-  name: string;
-};
-
-const ContinueWithData: ContinueWithType[] = [
-  {
-    id: 0,
-    name: 'google',
-    image: icons.google,
-  },
-  {
-    id: 1,
-    name: 'apple',
-    image: icons.apple,
-  },
-  {
-    id: 2,
-    name: 'facebook',
-    image: icons.facebook,
-  },
-];

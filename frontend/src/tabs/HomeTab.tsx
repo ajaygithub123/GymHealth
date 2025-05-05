@@ -43,7 +43,7 @@ const HomeTab = (props: Props) => {
   }, [products]); // update when products items updated
 
   const NavigateToProfile = async () => {
-    navigation.navigate('Setting');
+    navigation.navigate('Profile');
     await removeItem('onboarded'); // will reset to onboarding
   };
   const handleSelectCategory = () => {};
