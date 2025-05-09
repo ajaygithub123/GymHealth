@@ -1,11 +1,9 @@
 import React from 'react';
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {HomeTab, WishlistTab, CartTab, SearchTab, SettingTab} from '../tabs';
-import {Image, Text, View} from 'react-native';
-import {icons} from '../constants';
-import { ItemDetails } from '../constants/types';
-import {LoginScreen} from './LoginScreen';
-import {SignupScreen} from './SignupScreen';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { HomeTab, WishlistTab, CartTab, SearchTab, SettingTab } from '../tabs';
+import { Image, Text, View, TouchableOpacity } from 'react-native';
+import { icons } from '../constants';
+import { useNavigation } from '@react-navigation/native';
 
 type TabBarItemProps = {
   source: any; // Adjust type according to your image sources
@@ -13,6 +11,7 @@ type TabBarItemProps = {
   cart?: boolean;
   name?: string;
 };
+
 const TabBarItem: React.FC<TabBarItemProps> = ({
   source,
   focused,
@@ -35,7 +34,7 @@ const TabBarItem: React.FC<TabBarItemProps> = ({
           borderRadius: cart ? 32 : 0,
           backgroundColor: focused ? (cart ? 'red' : 'white') : 'white',
           shadowColor: '#000',
-          shadowOffset: {width: 0, height: 2},
+          shadowOffset: { width: 0, height: 2 },
           shadowOpacity: 0.25,
           shadowRadius: 3.84,
           elevation: cart ? 5 : 0,
@@ -52,43 +51,65 @@ const TabBarItem: React.FC<TabBarItemProps> = ({
       {!cart && (
         <Text
           className="font-pthin text-base"
-          style={{color: focused ? 'red' : 'black', fontSize: 12}}>
+          style={{ color: focused ? 'red' : 'black', fontSize: 12 }}>
           {name}
         </Text>
       )}
     </View>
   );
 };
+
 type Props = {};
 export type RouteTabsParamList = {
   Home: undefined;
   Wishlist: undefined;
-  Cart: {itemDetails: ItemDetails}  | undefined;
-  Search: {query: string} | undefined;
+  Cart: undefined;
+  Search: undefined;
   Setting: undefined;
+  ProductDetail: { product: any }; // Add ProductDetail route with product data
 };
+
 const HomeScreen = (props: Props) => {
   const Tab = createBottomTabNavigator<RouteTabsParamList>();
+  const navigation = useNavigation();
+
+  const handleProfileClick = () => {
+    navigation.navigate('ProductList', {
+      product: {
+        id: 1,
+        title: 'Sample Product',
+        description: 'This is a sample product description.',
+        price: 100,
+        image: ['https://via.placeholder.com/150'],
+        stars: 4.5,
+        numberOfReview: 120,
+      },
+    });
+  };
 
   return (
     <Tab.Navigator
       initialRouteName="Home"
       screenOptions={{
-        headerShown: false,
+        headerShown: true,
+        headerRight: () => (
+          <TouchableOpacity onPress={handleProfileClick}>
+            <Image
+              source={icons.profile}
+              style={{ width: 30, height: 30, marginRight: 15 }}
+            />
+          </TouchableOpacity>
+        ),
         tabBarStyle: {
           backgroundColor: 'white',
           borderTopColor: 'grey',
           height: 70,
           borderTopWidth: 0.2,
           shadowColor: '#000',
-          shadowOffset: {width: 0, height: 2},
+          shadowOffset: { width: 0, height: 2 },
           shadowOpacity: 0.25,
           shadowRadius: 3.84,
           elevation: 5,
-        },
-        tabBarIconStyle: {
-          justifyContent: 'center',
-          alignItems: 'center',
         },
         tabBarInactiveTintColor: 'black',
         tabBarActiveTintColor: 'red',
@@ -98,7 +119,7 @@ const HomeScreen = (props: Props) => {
         component={HomeTab}
         options={{
           tabBarLabel: '',
-          tabBarIcon: ({focused}) => (
+          tabBarIcon: ({ focused }) => (
             <TabBarItem source={icons.home} focused={focused} name="Home" />
           ),
         }}
@@ -108,7 +129,7 @@ const HomeScreen = (props: Props) => {
         component={WishlistTab}
         options={{
           tabBarLabel: '',
-          tabBarIcon: ({focused}) => (
+          tabBarIcon: ({ focused }) => (
             <TabBarItem
               source={icons.heart}
               focused={focused}
@@ -117,13 +138,12 @@ const HomeScreen = (props: Props) => {
           ),
         }}
       />
-
       <Tab.Screen
         name="Cart"
         component={CartTab}
         options={{
           tabBarLabel: '',
-          tabBarIcon: ({focused}) => (
+          tabBarIcon: ({ focused }) => (
             <TabBarItem
               source={icons.cart}
               focused={focused}
@@ -133,13 +153,12 @@ const HomeScreen = (props: Props) => {
           ),
         }}
       />
-
       <Tab.Screen
         name="Search"
         component={SearchTab}
         options={{
           tabBarLabel: '',
-          tabBarIcon: ({focused}) => (
+          tabBarIcon: ({ focused }) => (
             <TabBarItem source={icons.search} focused={focused} name="Search" />
           ),
         }}
@@ -149,7 +168,7 @@ const HomeScreen = (props: Props) => {
         component={SettingTab}
         options={{
           tabBarLabel: '',
-          tabBarIcon: ({focused}) => (
+          tabBarIcon: ({ focused }) => (
             <TabBarItem
               source={icons.setting}
               focused={focused}

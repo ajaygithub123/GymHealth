@@ -12,12 +12,16 @@ import {
   ProductsDetailsScreen,
   ProfileScreen,
   SignupScreen,
+
 } from './src/screens';
 import SplashScreen from 'react-native-splash-screen';
 import GetStartedScreen from './src/screens/GetStartedScreen';
 import {ItemDetails} from './src/constants/types';
 import {getItem} from './src/utils/AsyncStorage';
 import {ActivityIndicator, View} from 'react-native';
+import ProductListScreen from './src/screens/ProductListScreen';
+import { CartTab } from './src/tabs';
+
 
 export type RouteStackParamList = {
   Onboarding: undefined;
@@ -30,6 +34,7 @@ export type RouteStackParamList = {
   PlaceOrder: {itemDetails: ItemDetails} | undefined;
   ForgotPassword: undefined;
   ProductDetails: {itemDetails: ItemDetails} | undefined;
+  ProductList: undefined;
 };
 
 const App = () => {
@@ -75,10 +80,13 @@ const App = () => {
           <Stack.Screen name="Profile" component={ProfileScreen} />
           <Stack.Screen name="Signup" component={SignupScreen} />
           <Stack.Screen name="Checkout" component={CheckoutScreen} />
+          <Stack.Screen name="Cart" component={CartTab} />
+
           <Stack.Screen
             name="ProductDetails"
             component={ProductsDetailsScreen}
           />
+          <Stack.Screen name="ProductList" component={ProductListScreen} />
           <Stack.Screen
             name="ForgotPassword"
             component={ForgotPasswordScreen}
