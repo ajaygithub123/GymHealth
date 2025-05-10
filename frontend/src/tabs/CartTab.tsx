@@ -179,10 +179,16 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   checkoutButton: {
-    backgroundColor: '#5cb85c',
-    padding: 15,
-    borderRadius: 5,
+    backgroundColor: '#007BFF', // Primary color
+    paddingVertical: 15,
+    paddingHorizontal: 20,
+    borderRadius: 8,
     alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 3.84,
+    elevation: 5, // For Android shadow
   },
   checkoutButtonText: {
     color: '#fff',
