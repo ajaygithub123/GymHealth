@@ -21,6 +21,7 @@ import {getItem} from './src/utils/AsyncStorage';
 import {ActivityIndicator, View} from 'react-native';
 import ProductListScreen from './src/screens/ProductListScreen';
 import { CartTab } from './src/tabs';
+import BookingHistory from './src/screens/BookingHistory';
 
 
 export type RouteStackParamList = {
@@ -81,6 +82,7 @@ const App = () => {
           <Stack.Screen name="Signup" component={SignupScreen} />
           <Stack.Screen name="Checkout" component={CheckoutScreen} />
           <Stack.Screen name="Cart" component={CartTab} />
+          <Stack.Screen name="HistoryScreen" component={BookingHistory} />
 
           <Stack.Screen
             name="ProductDetails"

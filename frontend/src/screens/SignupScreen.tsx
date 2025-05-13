@@ -1,160 +1,150 @@
-import {useNavigation} from '@react-navigation/native';
-import {StackNavigationProp} from '@react-navigation/stack';
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
-  Image,
-  ImageSourcePropType,
-  Text,
-  TouchableOpacity,
   View,
+  Text,
+  ScrollView,
+  KeyboardAvoidingView,
+  Platform,
+  Alert,
+  TextInput,
+  StyleSheet,
+  TouchableOpacity,
 } from 'react-native';
-import {CustomButton, FormField} from '../components';
-import {icons} from '../constants';
 
-type Props = {};
-// let's go with get started first
-const SignupScreen = (props: Props) => {
-  const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
-  const [emailError, setEmailError] = useState('');
-  const [passwordError, setPasswordError] = useState('');
-  const [isSubmitting, setIsSubmitting] = useState(false);
+const SignupScreen = () => {
   const [form, setForm] = useState({
+    firstName: '',
+    lastName: '',
     email: '',
-    username: '',
     password: '',
-    confirmPassword: '',
   });
-  type RootStackParamList = {
-    ForgotPassword: undefined;
-    Login: undefined;
-  };
-  const handleForgotPassword = () => {
-    navigation.navigate('ForgotPassword');
+
+  const handleSignup = () => {
+    if (!form.firstName || !form.lastName || !form.email || !form.password) {
+      Alert.alert('Error', 'All fields are required.');
+      return;
+    }
+
+    if (!/^\S+@\S+\.\S+$/.test(form.email)) {
+      Alert.alert('Error', 'Please enter a valid email address.');
+      return;
+    }
+
+    if (form.password.length < 6) {
+      Alert.alert('Error', 'Password must be at least 6 characters long.');
+      return;
+    }
+
+    Alert.alert('Success', 'Signup successful!');
   };
 
-  const handleLogin = () => {};
-  const handleSignInWithProvider = () => {};
-  const handleNavigateToLogin = () => {
-    navigation.navigate('Login');
-  };
   return (
-    <View className="px-5 flex-1 bg-white pt-5">
-      <Text className="text-4xl font-bold text-start ">
-        Create an
-        {'\n'} account
-      </Text>
-      <View>
-        {/* text input */}
-        <FormField
-          title="Email"
-          value={form.email}
-          setError={setEmailError}
-          error={emailError}
-          handleChangeText={(e: any) => {
-            setEmailError('');
-            setForm({...form, email: e});
-          }}
-          placeholder="username or email"
-          otherStyles="my-5"
-        />
-        <View>
-          <FormField
-            title="Password"
-            value={form.password}
-            setError={setPasswordError}
-            error={emailError}
-            handleChangeText={(e: any) => {
-              setPasswordError('');
-              setForm({...form, password: e});
-            }}
-            placeholder="Password"
-            otherStyles="mt-5"
-          />
-          <FormField
-            title="Password"
-            value={form.confirmPassword}
-            setError={setPasswordError}
-            error={passwordError}
-            handleChangeText={(e: any) => {
-              setPasswordError('');
-              setForm({...form, password: e});
-            }}
-            placeholder="ConfirmPassword"
-            otherStyles="mt-5"
-          />
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+      <ScrollView
+        contentContainerStyle={{ flexGrow: 1 }}
+        showsVerticalScrollIndicator={false}>
+        <View style={styles.container}>
+          <Text style={styles.title}>Signup</Text>
 
-          <Text className="text-[#676767] text-lg font-medium self-end">
-            By clicking the <Text className="text-red-600"> Register</Text>{' '}
-            button, you agree to the public offer
-          </Text>
-        </View>
-        {/* submit btn */}
-        <CustomButton
-          title="Login"
-          handlePress={handleLogin}
-          isLoading={isSubmitting}
-          containerStyle="mt-7 py-5"
-        />
-        {/* or continue with  */}
-        <View className="mt-5 self-center">
-          <Text className="text-[#575757] text-lg self-center mt-5">
-            {' '}
-            - OR Continue with -{' '}
-          </Text>
-          <View className="flex flex-row items-center gap-3 mt-5 justify-between">
-            {ContinueWithData.map((item, index) => {
-              return (
-                <TouchableOpacity
-                  key={item.id}
-                  onPress={handleSignInWithProvider}
-                  className="rounded-full border-2 bg-red-50 border-red-500 p-4">
-                  <Image
-                    source={item.image}
-                    className="w-8 h-8 "
-                    resizeMode="contain"
-                  />
-                </TouchableOpacity>
-              );
-            })}
+          {/* First Name */}
+          <View style={styles.inputContainer}>
+            <Text style={styles.inputLabel}>First Name</Text>
+            <TextInput
+              style={styles.input}
+              value={form.firstName}
+              onChangeText={(text) => setForm({ ...form, firstName: text })}
+              placeholder="Enter your first name"
+            />
           </View>
-          <View className="flex flex-row  items-center gap-x-2 justify-center mt-8">
-            <Text className="text-[#575757] text-xl ">
-              I Already Have an Account
-            </Text>
-            <TouchableOpacity onPress={handleNavigateToLogin}>
-              <Text className="text-xl font-bold underline text-action ">
-                Login
-              </Text>
-            </TouchableOpacity>
+
+          {/* Last Name */}
+          <View style={styles.inputContainer}>
+            <Text style={styles.inputLabel}>Last Name</Text>
+            <TextInput
+              style={styles.input}
+              value={form.lastName}
+              onChangeText={(text) => setForm({ ...form, lastName: text })}
+              placeholder="Enter your last name"
+            />
           </View>
+
+          {/* Email */}
+          <View style={styles.inputContainer}>
+            <Text style={styles.inputLabel}>Email</Text>
+            <TextInput
+              style={styles.input}
+              value={form.email}
+              onChangeText={(text) => setForm({ ...form, email: text })}
+              placeholder="Enter your email"
+              keyboardType="email-address"
+            />
+          </View>
+
+          {/* Password */}
+          <View style={styles.inputContainer}>
+            <Text style={styles.inputLabel}>Password</Text>
+            <TextInput
+              style={styles.input}
+              value={form.password}
+              onChangeText={(text) => setForm({ ...form, password: text })}
+              placeholder="Enter your password"
+              secureTextEntry
+            />
+          </View>
+
+          {/* Signup Button */}
+          <TouchableOpacity style={styles.button} onPress={handleSignup}>
+            <Text style={styles.buttonText}>Signup</Text>
+          </TouchableOpacity>
         </View>
-      </View>
-    </View>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 };
 
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 20,
+    backgroundColor: '#f5f5f5',
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 20,
+    textAlign: 'center',
+  },
+  inputContainer: {
+    marginBottom: 15,
+  },
+  inputLabel: {
+    fontSize: 14,
+    color: '#555',
+    marginBottom: 5,
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 8,
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    fontSize: 16,
+    backgroundColor: '#fff',
+  },
+  button: {
+    backgroundColor: '#007BFF',
+    paddingVertical: 15,
+    borderRadius: 8,
+    alignItems: 'center',
+    marginTop: 20,
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+});
+
 export default SignupScreen;
-
-type ContinueWithType = {
-  image: ImageSourcePropType | undefined;
-  id: number;
-  name: string;
-};
-
-const ContinueWithData: ContinueWithType[] = [
-  {
-    id: 0,
-    name: 'google',
-    image: icons.google,
-  },
-  {
-    id: 1,
-    name: 'apple',
-    image: icons.apple,
-  },
-  {
-    id: 2,
-    name: 'facebook',
-    image: icons.facebook,
-  },
-];
