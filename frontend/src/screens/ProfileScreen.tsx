@@ -6,8 +6,10 @@ import {
   KeyboardAvoidingView,
   Platform,
   Alert,
+  TextInput,
+  StyleSheet,
+  TouchableOpacity,
 } from 'react-native';
-import { CustomButton, FormField } from '../components';
 
 const ProfileScreen = () => {
   const [form, setForm] = useState({
@@ -41,77 +43,124 @@ const ProfileScreen = () => {
       <ScrollView
         contentContainerStyle={{ flexGrow: 1 }}
         showsVerticalScrollIndicator={false}>
-        <View className="px-5 flex-1 bg-white pt-5">
-          <Text className="text-4xl font-bold text-start mb-5">
-            User Profile
-          </Text>
+        <View style={styles.container}>
+          <Text style={styles.title}>User Profile</Text>
 
           {/* First Name */}
-          <FormField
-            title="First Name"
-            value={form.firstName}
-            handleChangeText={(text: string) =>
-              isEditing && setForm({ ...form, firstName: text })
-            }
-            placeholder="Enter your first name"
-            otherStyles="mt-5"
-            editable={isEditing} // Editable only in edit mode
-          />
+          <View style={styles.inputContainer}>
+            <Text style={styles.inputLabel}>First Name</Text>
+            <TextInput
+              style={[styles.input, !isEditing && styles.inputDisabled]}
+              value={form.firstName}
+              onChangeText={(text) =>
+                isEditing && setForm({ ...form, firstName: text })
+              }
+              placeholder="Enter your first name"
+              editable={isEditing} // Editable only in edit mode
+            />
+          </View>
 
           {/* Last Name */}
-          <FormField
-            title="Last Name"
-            value={form.lastName}
-            handleChangeText={(text: string) =>
-              isEditing && setForm({ ...form, lastName: text })
-            }
-            placeholder="Enter your last name"
-            otherStyles="mt-5"
-            editable={isEditing} // Editable only in edit mode
-          />
+          <View style={styles.inputContainer}>
+            <Text style={styles.inputLabel}>Last Name</Text>
+            <TextInput
+              style={[styles.input, !isEditing && styles.inputDisabled]}
+              value={form.lastName}
+              onChangeText={(text) =>
+                isEditing && setForm({ ...form, lastName: text })
+              }
+              placeholder="Enter your last name"
+              editable={isEditing} // Editable only in edit mode
+            />
+          </View>
 
           {/* Email */}
-          <FormField
-            title="Email"
-            value={form.email}
-            handleChangeText={(text: string) =>
-              isEditing && setForm({ ...form, email: text })
-            }
-            placeholder="Enter your email"
-            otherStyles="mt-5"
-            keyboardType="email-address"
-            editable={isEditing} // Editable only in edit mode
-          />
+          <View style={styles.inputContainer}>
+            <Text style={styles.inputLabel}>Email</Text>
+            <TextInput
+              style={[styles.input, !isEditing && styles.inputDisabled]}
+              value={form.email}
+              onChangeText={(text) =>
+                isEditing && setForm({ ...form, email: text })
+              }
+              placeholder="Enter your email"
+              keyboardType="email-address"
+              editable={isEditing} // Editable only in edit mode
+            />
+          </View>
 
           {/* Mobile Number (Non-editable) */}
-          <FormField
-            title="Mobile Number"
-            value={form.mobile}
-            handleChangeText={() => {}}
-            placeholder="Enter mobile number"
-            otherStyles="mt-5"
-            keyboardType="phone-pad"
-            editable={false} // Always non-editable
-          />
+          <View style={styles.inputContainer}>
+            <Text style={styles.inputLabel}>Mobile Number</Text>
+            <TextInput
+              style={[styles.input, styles.inputDisabled]}
+              value={form.mobile}
+              placeholder="Enter mobile number"
+              keyboardType="phone-pad"
+              editable={false} // Always non-editable
+            />
+          </View>
 
           {/* Action Buttons */}
-          {isEditing ? (
-            <CustomButton
-              title="Save"
-              handlePress={handleSave}
-              containerStyle="mt-10 py-5"
-            />
-          ) : (
-            <CustomButton
-              title="Edit Profile"
-              handlePress={() => setIsEditing(true)}
-              containerStyle="mt-10 py-5"
-            />
-          )}
+          <TouchableOpacity
+            style={styles.button}
+            onPress={isEditing ? handleSave : () => setIsEditing(true)}>
+            <Text style={styles.buttonText}>
+              {isEditing ? 'Save' : 'Edit Profile'}
+            </Text>
+          </TouchableOpacity>
         </View>
       </ScrollView>
     </KeyboardAvoidingView>
   );
 };
 
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 20,
+    backgroundColor: '#f5f5f5',
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 20,
+    textAlign: 'center',
+  },
+  inputContainer: {
+    marginBottom: 15,
+  },
+  inputLabel: {
+    fontSize: 14,
+    color: '#555',
+    marginBottom: 5,
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 8,
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    fontSize: 16,
+    backgroundColor: '#fff',
+  },
+  inputDisabled: {
+    backgroundColor: '#f0f0f0',
+    color: '#888',
+  },
+  button: {
+    backgroundColor: '#007BFF',
+    paddingVertical: 15,
+    borderRadius: 8,
+    alignItems: 'center',
+    marginTop: 20,
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+});
+
 export default ProfileScreen;
+
